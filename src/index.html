@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pomodoro Timer</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"
+      defer
+    ></script>
+    <script>
+      function pomodoroTimer() {
+        return {
+          minutes: 25,
+          seconds: 0,
+          timerInterval: null,
+          isRunning: false,
+          formattedTime() {
+            return `${String(this.minutes).padStart(2, "0")}:${String(
+              this.seconds
+            ).padStart(2, "0")}`;
+          },
+          start() {
+            if (this.isRunning) return;
+            this.isRunning = true;
+            this.timerInterval = setInterval(() => {
+              if (this.seconds === 0) {
+                if (this.minutes === 0) {
+                  clearInterval(this.timerInterval); // Stop the timer when it reaches 0:00
+                  this.isRunning = false;
+                  alert("Pomodoro Complete!");
+                } else {
+                  this.minutes--;
+                  this.seconds = 59;
+                }
+              } else {
+                this.seconds--;
+              }
+            }, 1000);
+          },
+          reset() {
+            clearInterval(this.timerInterval); // Clear the interval on reset
+            this.minutes = 25;
+            this.seconds = 0;
+            this.isRunning = false;
+          },
+        };
+      }
+    </script>
+    <style>
+      .pomodoro-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #374151;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+      }
+      .timer {
+        font-size: 3rem;
+        font-family: "Courier New", Courier, monospace;
+        margin: 20px 0;
+      }
+      .btn {
+        padding: 10px 20px;
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #2563eb;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900">
+    <div x-data="pomodoroTimer()" class="pomodoro-container">
+      <h2 class="mb-4 text-xl font-bold">Pomodoro Timer</h2>
+      <div class="timer" x-text="formattedTime()"></div>
+      <div class="flex justify-center gap-4">
+        <button @click="start()" :disabled="isRunning" class="btn">
+          Start
+        </button>
+        <button @click="reset()" class="btn">Reset</button>
+      </div>
+    </div>
+  </body>
+</html>
